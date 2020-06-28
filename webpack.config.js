@@ -39,6 +39,19 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(je?pg|png|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: '../images',
+              publicPath: 'images'
+            }
+          }
+        ]
       }
     ]
   },
@@ -46,7 +59,7 @@ module.exports = {
     new copyWebpackPlugin({
       patterns: [
         { from: 'src/index.html', to: '../index.html'},
-        { from: 'src/images', to: '../images'}
+        // { from: 'src/images', to: '../images'}
       ]
     })
   ]
