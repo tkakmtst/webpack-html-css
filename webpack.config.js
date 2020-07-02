@@ -1,20 +1,32 @@
 const path = require('path');
 const copyWebpackPlugin = require('copy-webpack-plugin');
+const outputPath = path.join(__dirname, 'public');
 
 module.exports = {
   // モードの設定、v4系以降はmodeを指定しないと、webpack実行時に警告が出る
   mode: 'development',
-  // エントリーポイントの設定
+// エントリーポイントの設定
   entry: './src/js/app.js',
   // 出力の設定
   output: {
     // 出力先のパス（絶対パスを指定する必要がある
-    path: path.join(__dirname, 'public/js/'),
+    path: outputPath,
     // 出力するファイル名
-    filename: 'bundle.js',
+    filename: 'js/bundle.js'
   },
   // developmentモードで有効になるdevtool: 'eval'を上書き
   devtool: 'source-map',
+  devServer: {
+    inline: true,
+    hot: true,
+    open: true,
+    openPage: "index.html",
+    contentBase: path.join(__dirname, 'src'),
+    watchContentBase: true,
+    // PCのIPアドレスを入れる
+    host: "192.168.mm.nn",
+    port: 8080,
+  },
   module: {
     rules: [
       {
@@ -26,7 +38,6 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-
               sourceMap: true
             }
           },
@@ -47,8 +58,8 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: '../images',
-              publicPath: 'images'
+              outputPath: 'images',
+              publicPath: outputPath
             }
           }
         ]
@@ -58,7 +69,7 @@ module.exports = {
   plugins: [
     new copyWebpackPlugin({
       patterns: [
-        { from: 'src/index.html', to: '../index.html'},
+        { from: 'src/index.html', to: outputPath},
       ]
     })
   ]
