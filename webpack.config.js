@@ -1,5 +1,6 @@
 const path = require('path');
-const copyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const outputPath = path.join(__dirname, 'public');
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
     hot: true,
     open: true,
     openPage: "index.html",
-    contentBase: path.join(__dirname, 'src'),
+    contentBase: path.join(__dirname, 'public'),
     watchContentBase: true,
     // PCのIPアドレスを入れる
     host: "192.168.mm.nn",
@@ -51,21 +52,32 @@ module.exports = {
           }
         ]
       },
+      // webpack build時にhtmlをロードするために必要
+      {
+        test: /\.html$/,
+        loader: "html-loader"
+      },
       {
         test: /\.(gif|png|jpe?g|eot|wof|woff|woff2|ttf|svg)$/,
         use: [
           {
             loader: 'url-loader',
+            options: {
+              name: 'images/[name].[ext]',
+            }
           }
         ]
-      }
+      },
     ]
   },
+  // public ファイル配下に index.htmlを配置するのに必要
   plugins: [
-    new copyWebpackPlugin({
-      patterns: [
-        { from: 'src/index.html', to: outputPath},
-      ]
-    })
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: 'src/index.html',
+      alwaysWriteToDisk: true
+    }),
+    // alwaysWriteToDisk: trueを指定するためのプラグイン
+    new HtmlWebpackHarddiskPlugin()
   ]
 };
